@@ -1,5 +1,5 @@
 import pygame
-
+import os
 playerImages = []
 playerImages.append(pygame.image.load('../res/img/Base pack/Player/p1_stand.png'))
 
@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = playerImages
-		self.image.set_colorkey(BLACK)
+		self.image.set_colorkey(0, 0, 0)
 		self.rect = self.image.get_rect()
 		self.rect.centerx = WIDTH / 2 
 		self.rect.centery = HEIGHT -100
