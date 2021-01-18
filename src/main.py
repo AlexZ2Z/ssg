@@ -2,7 +2,7 @@ import pygame
 import random
 import time
 import os
-
+from player import Player
 #параметры
 WIDTH = 1000 
 HEIGHT = 1000
@@ -20,9 +20,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 #настройка папки ассетов
-game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder, 'img')
-player_img = pygame.image.load(os.path.join(img_folder, 'Base pack\Player\p1_jump.png')).convert()
+#game_folder = os.path.dirname(__file__)
+#img_folder = os.path.join(game_folder, 'img')
+#player_img = pygame.image.load(os.path.join(img_folder, '..\res\img\Base pack\Player\p1_jump.png')).convert()
 
 
 
@@ -80,7 +80,8 @@ class Mob(pygame.sprite.Sprite):
 			self.rect.top = 0
 		if self.rect.bottom > HEIGHT:
 			self.rect.bottom = HEIGHT
-#игрок			
+#игрок	
+'''		
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
@@ -130,6 +131,7 @@ class Player(pygame.sprite.Sprite):
 			else:
 				self.isJump = False
 				self.jumpCount = 10
+'''
 # игра
 pygame.init()
 pygame.mixer.init()
