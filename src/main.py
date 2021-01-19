@@ -2,6 +2,8 @@ import pygame
 import random
 import time
 import os
+#from player import Player
+
 
 #параметры
 WIDTH = 1000 
@@ -17,12 +19,10 @@ mobSpeed = 5
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-
-
 #настройка папки ассетов
 game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder, '..\res')
-player_img = pygame.image.load(os.path.join(img_folder, 'img\Base pack\Player\p1_jump.png')).convert()
+img_folder = os.path.join(game_folder, '../res')
+player_img = pygame.image.load(os.path.join(img_folder, 'img/Base pack/Player/p1_jump.png')).convert()
 
 
 
@@ -45,7 +45,10 @@ c3 = (105, 123, 174)
 
 #платфотмы
 class Platform(pygame.sprite.Sprite):
+
 	def __init__(self):
+		self.x = 0
+		self.y = 0
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.Surface((100, 15))
 		self.image.fill(c2)
@@ -59,6 +62,7 @@ class Platform(pygame.sprite.Sprite):
 			self.rect.x = random.randrange(WIDTH - self.rect.width)
 			self.rect.y = random.randrange(-100, -40)
 			self.speedy = 3
+		
 #мобы	
 class Mob(pygame.sprite.Sprite):
 	def __init__(self):
@@ -80,20 +84,19 @@ class Mob(pygame.sprite.Sprite):
 			self.rect.top = 0
 		if self.rect.bottom > HEIGHT:
 			self.rect.bottom = HEIGHT
-#игрок			
+#игрок
 class Player(pygame.sprite.Sprite):
+	x = 500
+	y = 500
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = player_img
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
-		self.rect.centerx = WIDTH / 2 
-		self.rect.centery = HEIGHT -100
-		self.isJump = False
-		self.jumpCount = 10
 		self.rect.x = 500
 		self.rect.y = 500
-	
+		self.isJump = False
+		self.jumpCount = 10
 	def update(self):
 		#передвижение
 		self.speedx = 0
@@ -103,13 +106,10 @@ class Player(pygame.sprite.Sprite):
 			self.speedx = -7
 		if keystate[pygame.K_d]:
 			self.speedx = 7 
-		if keystate[pygame.K_w]:
-			self.speedy = -7
 		if keystate[pygame.K_s]:
 			self.speedy = 7
 		self.rect.x += self.speedx
 		self.rect.y += self.speedy
-		
 		#границы экрана
 		if self.rect.right > WIDTH:
 			self.rect.right = WIDTH
@@ -123,26 +123,32 @@ class Player(pygame.sprite.Sprite):
 		if self.isJump:
 			if self.jumpCount >= -10:
 				neg = 1
-				if self.jumpCount < 0:
+				if self.jumpCount < -5:
 					neg = -1
 				self.rect.y -= self.jumpCount ** 2 * neg // 2
 				self.jumpCount -= 1
 			else:
 				self.isJump = False
 				self.jumpCount = 10
+		x = self.rect.x
+		y = self.rect.y
 # игра
 pygame.init()
 pygame.mixer.init()
 pygame.display.set_caption("Project S&S")
 clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
-for i in range(60):
+platforms = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
+for i in range(30):
 	pt = Platform()
 	all_sprites.add(pt)
-	#platforms.add(t)
-m = Mob()
-all_sprites.add(m)
-Mob.add(m)
+	platforms.add(pt)
+
+
+mob = Mob()
+all_sprites.add(mob)
+mobs.add(mob)
 
 player = Player()
 all_sprites.add(player)
@@ -174,15 +180,24 @@ while running:
 
 	#обновление
 	all_sprites.update()
-			
+	'''hits = pygame.sprite.spritecollide(player, mobs, False)'''
+	'''hits = pygame.sprite.spritecollide(player, platforms, False)'''
+	hits = False
+	for plat in platforms():
+		if plat.rect.right > player.rect.left:
+			hits = True
+	'''if p.rect.right > player.rect.left and pt.rect.left < player.rect.right and pt.rect.top < player.rect.bottom:
+		hits = True'''
+	if hits:
+		running = False
 	#рендеринг
 	screen.fill(c3)
 	all_sprites.draw(screen)
-			
+
 	#переворот экрана
 	pygame.display.flip()
 	pygame.display.update()
 
-
+print()
 
 pygame.quit()
